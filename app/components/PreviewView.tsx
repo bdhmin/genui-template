@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   SandpackProvider,
   SandpackPreview,
@@ -12,13 +13,29 @@ interface PreviewViewProps {
 }
 
 export default function PreviewView({ code, isStreaming }: PreviewViewProps) {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // Detect color scheme
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
   // Show empty state when no code
   if (!code) {
     return (
-      <div className="flex h-full flex-col items-center justify-center bg-[#0d0d0d] text-center">
-        <div className="mb-4 rounded-full bg-zinc-800 p-4">
+      <div 
+        className="flex h-full flex-col items-center justify-center text-center"
+        style={{ backgroundColor: 'var(--bg-secondary)' }}
+      >
+        <div className="mb-4 rounded-full p-4" style={{ backgroundColor: 'var(--bg-elevated)' }}>
           <svg
-            className="h-8 w-8 text-zinc-500"
+            className="h-8 w-8"
+            style={{ color: 'var(--text-muted)' }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -37,8 +54,8 @@ export default function PreviewView({ code, isStreaming }: PreviewViewProps) {
             />
           </svg>
         </div>
-        <h3 className="mb-1 text-base font-medium text-zinc-300">No preview</h3>
-        <p className="max-w-xs text-sm text-zinc-500">
+        <h3 className="mb-1 text-base font-medium" style={{ color: 'var(--text-secondary)' }}>No preview</h3>
+        <p className="max-w-xs text-sm" style={{ color: 'var(--text-muted)' }}>
           Generate a component to see it rendered here
         </p>
       </div>
@@ -48,10 +65,14 @@ export default function PreviewView({ code, isStreaming }: PreviewViewProps) {
   // Show generating state while streaming
   if (isStreaming) {
     return (
-      <div className="flex h-full flex-col items-center justify-center bg-[#0d0d0d] text-center">
-        <div className="mb-4 rounded-full bg-zinc-800 p-4">
+      <div 
+        className="flex h-full flex-col items-center justify-center text-center"
+        style={{ backgroundColor: 'var(--bg-secondary)' }}
+      >
+        <div className="mb-4 rounded-full p-4" style={{ backgroundColor: 'var(--bg-elevated)' }}>
           <svg
-            className="h-8 w-8 animate-spin text-emerald-500"
+            className="h-8 w-8 animate-spin"
+            style={{ color: 'var(--accent)' }}
             fill="none"
             viewBox="0 0 24 24"
           >
@@ -70,8 +91,8 @@ export default function PreviewView({ code, isStreaming }: PreviewViewProps) {
             />
           </svg>
         </div>
-        <h3 className="mb-1 text-base font-medium text-zinc-300">Generating...</h3>
-        <p className="max-w-xs text-sm text-zinc-500">
+        <h3 className="mb-1 text-base font-medium" style={{ color: 'var(--text-secondary)' }}>Generating...</h3>
+        <p className="max-w-xs text-sm" style={{ color: 'var(--text-muted)' }}>
           Preview will appear when code generation is complete
         </p>
       </div>
@@ -85,11 +106,12 @@ export default function PreviewView({ code, isStreaming }: PreviewViewProps) {
     : `import { useState, useEffect, useRef, useMemo, useCallback } from "react";\n\n${code}`;
 
   // Wrap the generated component in an App that renders it
+  const bgColor = isDarkMode ? "bg-zinc-950" : "bg-zinc-50";
   const appCode = `import GeneratedComponent from "./GeneratedComponent";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-zinc-950 p-8">
+    <div className="min-h-screen ${bgColor} p-8">
       <GeneratedComponent />
     </div>
   );
@@ -101,10 +123,10 @@ export default function App() {
   };
 
   return (
-    <div className="h-full bg-[#0d0d0d]">
+    <div className="h-full" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       <SandpackProvider
         template="react-ts"
-        theme="dark"
+        theme={isDarkMode ? "dark" : "light"}
         files={files}
         customSetup={{
           dependencies: {
@@ -120,7 +142,7 @@ export default function App() {
             "sp-wrapper": "!h-full",
             "sp-layout": "!h-full !border-0 !bg-transparent",
             "sp-preview": "!h-full",
-            "sp-preview-container": "!h-full !bg-[#0d0d0d]",
+            "sp-preview-container": "!h-full",
           },
         }}
       >
@@ -135,4 +157,3 @@ export default function App() {
     </div>
   );
 }
-

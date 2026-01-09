@@ -118,7 +118,8 @@ export default function Home() {
   return (
     <div 
       ref={containerRef}
-      className="flex h-screen w-screen overflow-hidden bg-[#0a0a0a]"
+      className="flex h-screen w-screen overflow-hidden"
+      style={{ backgroundColor: 'var(--bg-primary)' }}
     >
       {/* Left Panel - Chat */}
       <div 
@@ -134,12 +135,26 @@ export default function Home() {
 
       {/* Resizable Divider */}
       <div
-        className={`group relative h-full w-1 shrink-0 cursor-col-resize bg-zinc-800 transition-colors hover:bg-emerald-500 ${
-          isDragging ? "bg-emerald-500" : ""
-        }`}
+        className="group relative h-full w-1 shrink-0 cursor-col-resize transition-colors"
+        style={{ 
+          backgroundColor: isDragging ? 'var(--divider-hover)' : 'var(--divider)',
+        }}
         onMouseDown={() => setIsDragging(true)}
+        onMouseEnter={(e) => {
+          if (!isDragging) {
+            e.currentTarget.style.backgroundColor = 'var(--divider-hover)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isDragging) {
+            e.currentTarget.style.backgroundColor = 'var(--divider)';
+          }
+        }}
       >
-        <div className={`absolute inset-y-0 -left-1 -right-1 ${isDragging ? "bg-emerald-500/10" : ""}`} />
+        <div 
+          className="absolute inset-y-0 -left-1 -right-1"
+          style={{ backgroundColor: isDragging ? 'rgba(16, 185, 129, 0.1)' : 'transparent' }}
+        />
       </div>
 
       {/* Right Panel - Code/Preview */}

@@ -10,8 +10,19 @@ interface CodeViewProps {
 
 export default function CodeView({ code, isStreaming }: CodeViewProps) {
   const [highlightedHtml, setHighlightedHtml] = useState<string>("");
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const codeContainerRef = useRef<HTMLDivElement>(null);
   const lastCodeRef = useRef<string>("");
+
+  // Detect color scheme
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     // Only re-highlight if code changed significantly or streaming stopped
@@ -24,12 +35,12 @@ export default function CodeView({ code, isStreaming }: CodeViewProps) {
       lastCodeRef.current = code;
       codeToHtml(code, {
         lang: "tsx",
-        theme: "github-dark",
+        theme: isDarkMode ? "github-dark" : "github-light",
       }).then(setHighlightedHtml);
     } else if (!code) {
       setHighlightedHtml("");
     }
-  }, [code, isStreaming]);
+  }, [code, isStreaming, isDarkMode]);
 
   useEffect(() => {
     // Auto-scroll to bottom while streaming
@@ -45,10 +56,14 @@ export default function CodeView({ code, isStreaming }: CodeViewProps) {
 
   if (!code) {
     return (
-      <div className="flex h-full flex-col items-center justify-center bg-[#0d0d0d] text-center">
-        <div className="mb-4 rounded-full bg-[#1a1a1a] p-4">
+      <div 
+        className="flex h-full flex-col items-center justify-center text-center"
+        style={{ backgroundColor: 'var(--bg-secondary)' }}
+      >
+        <div className="mb-4 rounded-full p-4" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
           <svg
-            className="h-8 w-8 text-zinc-600"
+            className="h-8 w-8"
+            style={{ color: 'var(--text-faint)' }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -61,8 +76,8 @@ export default function CodeView({ code, isStreaming }: CodeViewProps) {
             />
           </svg>
         </div>
-        <h3 className="mb-1 text-lg font-medium text-zinc-400">No code yet</h3>
-        <p className="max-w-xs text-sm text-zinc-600">
+        <h3 className="mb-1 text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>No code yet</h3>
+        <p className="max-w-xs text-sm" style={{ color: 'var(--text-faint)' }}>
           Generated code will appear here as it streams
         </p>
       </div>
@@ -70,23 +85,38 @@ export default function CodeView({ code, isStreaming }: CodeViewProps) {
   }
 
   return (
-    <div className="flex h-full flex-col bg-[#0d0d0d]">
+    <div className="flex h-full flex-col" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       {/* Toolbar */}
-      <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#1a1a1a] px-5">
+      <div 
+        className="flex h-10 shrink-0 items-center justify-between px-5"
+        style={{ borderBottom: '1px solid var(--border-secondary)' }}
+      >
         <div className="flex items-center gap-3">
-          <span className="text-xs font-medium text-zinc-500">
+          <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
             GeneratedComponent.tsx
           </span>
           {isStreaming && (
-            <span className="flex items-center gap-1.5 rounded-full bg-emerald-900/30 px-2.5 py-1 text-xs text-emerald-400">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+            <span 
+              className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"
+              style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent-text)' }}
+            >
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ backgroundColor: 'var(--accent-text)' }} />
               Streaming
             </span>
           )}
         </div>
         <button
           onClick={handleCopy}
-          className="rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-[#1a1a1a] hover:text-zinc-300"
+          className="rounded-md p-1.5 transition-colors"
+          style={{ color: 'var(--text-muted)' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--text-muted)';
+          }}
           title="Copy code"
         >
           <svg
@@ -116,10 +146,10 @@ export default function CodeView({ code, isStreaming }: CodeViewProps) {
             className="[&_pre]:!bg-transparent [&_pre]:!p-0 [&_code]:!bg-transparent"
           />
         ) : (
-          <pre className="whitespace-pre-wrap text-zinc-400">
+          <pre className="whitespace-pre-wrap" style={{ color: 'var(--text-secondary)' }}>
             <code>{code}</code>
             {isStreaming && (
-              <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse bg-emerald-500" />
+              <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse" style={{ backgroundColor: 'var(--accent)' }} />
             )}
           </pre>
         )}
@@ -127,4 +157,3 @@ export default function CodeView({ code, isStreaming }: CodeViewProps) {
     </div>
   );
 }
-

@@ -18,16 +18,31 @@ export default function CodePreviewPanel({
   const [activeTab, setActiveTab] = useState<Tab>("ui");
 
   return (
-    <div className="flex h-full flex-col bg-[#0d0d0d]">
+    <div className="flex h-full flex-col" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       {/* Tab bar */}
-      <div className="flex h-[52px] shrink-0 items-center gap-1 border-b border-zinc-800 px-4">
+      <div 
+        className="flex h-[52px] shrink-0 items-center gap-1 px-4"
+        style={{ borderBottom: '1px solid var(--border-primary)' }}
+      >
         <button
           onClick={() => setActiveTab("ui")}
-          className={`flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors ${
-            activeTab === "ui"
-              ? "bg-zinc-800 text-zinc-100"
-              : "text-zinc-500 hover:bg-zinc-800/50 hover:text-zinc-400"
-          }`}
+          className="flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors"
+          style={{
+            backgroundColor: activeTab === "ui" ? 'var(--bg-elevated)' : 'transparent',
+            color: activeTab === "ui" ? 'var(--text-primary)' : 'var(--text-muted)',
+          }}
+          onMouseEnter={(e) => {
+            if (activeTab !== "ui") {
+              e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeTab !== "ui") {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'var(--text-muted)';
+            }
+          }}
         >
           <svg
             className="h-4 w-4"
@@ -46,11 +61,23 @@ export default function CodePreviewPanel({
         </button>
         <button
           onClick={() => setActiveTab("code")}
-          className={`flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors ${
-            activeTab === "code"
-              ? "bg-zinc-800 text-zinc-100"
-              : "text-zinc-500 hover:bg-zinc-800/50 hover:text-zinc-400"
-          }`}
+          className="flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors"
+          style={{
+            backgroundColor: activeTab === "code" ? 'var(--bg-elevated)' : 'transparent',
+            color: activeTab === "code" ? 'var(--text-primary)' : 'var(--text-muted)',
+          }}
+          onMouseEnter={(e) => {
+            if (activeTab !== "code") {
+              e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeTab !== "code") {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = 'var(--text-muted)';
+            }
+          }}
         >
           <svg
             className="h-4 w-4"
@@ -80,4 +107,3 @@ export default function CodePreviewPanel({
     </div>
   );
 }
-

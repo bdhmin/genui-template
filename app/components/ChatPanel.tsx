@@ -72,20 +72,38 @@ export default function ChatPanel({
   };
 
   return (
-    <div className="flex h-full flex-col bg-[#0d0d0d]">
+    <div
+      className="flex h-full flex-col"
+      style={{ backgroundColor: 'var(--bg-secondary)' }}
+    >
       {/* Header */}
-      <div className="flex h-[52px] shrink-0 items-center gap-2 border-b border-zinc-800 px-4">
-        <div className="h-2 w-2 rounded-full bg-emerald-500" />
-        <span className="text-sm font-medium text-zinc-300">GenUI Chat</span>
+      <div
+        className="flex h-[52px] shrink-0 items-center gap-2 px-4"
+        style={{ borderBottom: '1px solid var(--border-primary)' }}
+      >
+        <div
+          className="h-2 w-2 rounded-full"
+          style={{ backgroundColor: 'var(--accent)' }}
+        />
+        <span
+          className="text-sm font-medium"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          GenUI Chat
+        </span>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center px-4">
-            <div className="mb-6 rounded-full bg-zinc-800 p-4">
+            <div
+              className="mb-6 rounded-full p-4"
+              style={{ backgroundColor: 'var(--bg-elevated)' }}
+            >
               <svg
-                className="h-8 w-8 text-zinc-500"
+                className="h-8 w-8"
+                style={{ color: 'var(--text-muted)' }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -98,10 +116,16 @@ export default function ChatPanel({
                 />
               </svg>
             </div>
-            <h3 className="mb-2 text-base font-medium text-zinc-300">
+            <h3
+              className="mb-2 text-base font-medium"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               What would you like to build?
             </h3>
-            <p className="mb-6 max-w-sm text-center text-sm text-zinc-500">
+            <p
+              className="mb-6 max-w-sm text-center text-sm"
+              style={{ color: 'var(--text-muted)' }}
+            >
               Describe a component or try one of these examples
             </p>
             <div className="grid w-full max-w-md gap-2">
@@ -110,12 +134,33 @@ export default function ChatPanel({
                   key={example.title}
                   onClick={() => handleExampleClick(example.prompt)}
                   disabled={isGenerating}
-                  className="group rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-left transition-all hover:border-zinc-700 hover:bg-zinc-800/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="group rounded-lg px-4 py-3 text-left transition-all disabled:cursor-not-allowed disabled:opacity-50"
+                  style={{
+                    border: '1px solid var(--border-primary)',
+                    backgroundColor: 'var(--bg-tertiary)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor =
+                      'var(--border-secondary)';
+                    e.currentTarget.style.backgroundColor =
+                      'var(--bg-elevated)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-primary)';
+                    e.currentTarget.style.backgroundColor =
+                      'var(--bg-tertiary)';
+                  }}
                 >
-                  <span className="block text-sm font-medium text-zinc-300 group-hover:text-zinc-100">
+                  <span
+                    className="block text-sm font-medium"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
                     {example.title}
                   </span>
-                  <span className="mt-1 block text-xs text-zinc-500 line-clamp-2">
+                  <span
+                    className="mt-1 block text-xs line-clamp-2"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
                     {example.prompt}
                   </span>
                 </button>
@@ -123,7 +168,7 @@ export default function ChatPanel({
             </div>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-4">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -132,11 +177,17 @@ export default function ChatPanel({
                 }`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                    message.role === 'user'
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-zinc-800 text-zinc-200'
-                  }`}
+                  className="max-w-[85%] rounded-2xl px-4 py-3"
+                  style={{
+                    backgroundColor:
+                      message.role === 'user'
+                        ? 'var(--user-message-bg)'
+                        : 'var(--assistant-message-bg)',
+                    color:
+                      message.role === 'user'
+                        ? 'var(--user-message-text)'
+                        : 'var(--assistant-message-text)',
+                  }}
                 >
                   <p className="whitespace-pre-wrap text-[13px] leading-relaxed">
                     {message.content}
@@ -146,11 +197,23 @@ export default function ChatPanel({
             ))}
             {isGenerating && (
               <div className="flex justify-start">
-                <div className="rounded-2xl bg-zinc-800 px-4 py-3">
+                <div
+                  className="rounded-2xl px-4 py-3"
+                  style={{ backgroundColor: 'var(--assistant-message-bg)' }}
+                >
                   <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500 [animation-delay:-0.3s]" />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500 [animation-delay:-0.15s]" />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-zinc-500" />
+                    <span
+                      className="h-2 w-2 animate-bounce rounded-full [animation-delay:-0.3s]"
+                      style={{ backgroundColor: 'var(--text-muted)' }}
+                    />
+                    <span
+                      className="h-2 w-2 animate-bounce rounded-full [animation-delay:-0.15s]"
+                      style={{ backgroundColor: 'var(--text-muted)' }}
+                    />
+                    <span
+                      className="h-2 w-2 animate-bounce rounded-full"
+                      style={{ backgroundColor: 'var(--text-muted)' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -161,9 +224,18 @@ export default function ChatPanel({
       </div>
 
       {/* Input */}
-      <div className="w-full border-t border-zinc-800 px-6 pb-5 pt-6">
+      <div
+        className="w-full px-6 pb-5 pt-6"
+        style={{ borderTop: '1px solid var(--border-primary)' }}
+      >
         <div className="mx-auto">
-          <div className="overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500">
+          <div
+            className="overflow-hidden rounded-xl transition-all"
+            style={{
+              border: '1px solid var(--border-primary)',
+              backgroundColor: 'var(--bg-tertiary)',
+            }}
+          >
             <textarea
               ref={textareaRef}
               value={input}
@@ -172,17 +244,30 @@ export default function ChatPanel({
               placeholder="Describe the component you want..."
               disabled={isGenerating}
               rows={3}
-              className="block w-full resize-none border-0 bg-transparent p-4 text-sm leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 disabled:opacity-50"
+              className="block w-full resize-none border-0 bg-transparent p-4 text-sm leading-relaxed focus:outline-none focus:ring-0 disabled:opacity-50"
+              style={{
+                color: 'var(--text-primary)',
+              }}
             />
             <div className="flex items-center justify-between px-4 pb-3 pt-1">
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 Enter to send · Shift+Enter for new line
               </span>
               <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={!input.trim() || isGenerating}
-                className="rounded-lg bg-emerald-600 px-4 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg px-4 py-1.5 text-xs font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                style={{ backgroundColor: 'var(--accent)' }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor =
+                      'var(--accent-hover)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--accent)';
+                }}
               >
                 Send
               </button>

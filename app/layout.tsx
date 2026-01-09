@@ -13,8 +13,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GenUI - Generate React Components",
-  description: "Generate customizable React components with AI",
+  title: "GenUI Template",
+  description: "A template for building generative UI applications with AI",
 };
 
 export default function RootLayout({
